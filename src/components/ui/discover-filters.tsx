@@ -72,25 +72,25 @@ export function DiscoverFilters({ basePath, genres }: DiscoverFiltersProps) {
         label="Genre"
         options={genreOptions}
         value={current.genre}
-        onChange={(e) => updateParam("genre", e.target.value)}
+        onChange={(value) => updateParam("genre", value)}
       />
       <Select
         label="Year"
         options={YEAR_OPTIONS}
         value={current.year}
-        onChange={(e) => updateParam("year", e.target.value)}
+        onChange={(value) => updateParam("year", value)}
       />
       <Select
         label="Rating"
         options={RATING_OPTIONS}
         value={current.rating}
-        onChange={(e) => updateParam("rating", e.target.value)}
+        onChange={(value) => updateParam("rating", value)}
       />
       <Select
         label="Sort by"
         options={SORT_OPTIONS}
         value={current.sort}
-        onChange={(e) => updateParam("sort", e.target.value)}
+        onChange={(value) => updateParam("sort", value)}
       />
     </>
   );

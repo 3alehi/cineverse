@@ -22,7 +22,7 @@ export function SavedListToolbar({
         <Select
           label="Type"
           value={filter}
-          onChange={(e) => onFilterChange(e.target.value as FilterValue)}
+          onChange={(value) => onFilterChange(value as FilterValue)}
           options={[
             { label: "All", value: "all" },
             { label: "Movies", value: "movie" },
@@ -34,7 +34,7 @@ export function SavedListToolbar({
         <Select
           label="Sort by"
           value={sort}
-          onChange={(e) => onSortChange(e.target.value as SortValue)}
+          onChange={(value) => onSortChange(value as SortValue)}
           options={[
             { label: "Recently added", value: "added-desc" },
             { label: "Oldest added", value: "added-asc" },

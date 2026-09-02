@@ -8,7 +8,7 @@ import { MediaCardSkeleton } from "@/components/ui/media-card-skeleton";
 import { PersonCard } from "./person-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
-import { Input } from "@/components/ui/input";
+import { X } from "lucide-react";
 import { cn } from "@/lib/cn";
 import type { MovieSummary, TVSummary, PersonSummary } from "@/types/tmdb";
 
@@ -44,20 +44,36 @@ export function SearchExperience({ initialQuery = "" }: { initialQuery?: string 
 
   return (
     <div className="space-y-6">
-      <div className="relative">
+      <div
+        className={cn(
+          "group relative flex items-center gap-3 rounded-2xl border bg-surface px-5 py-4 transition-all duration-150",
+          "border-border hover:border-border-strong",
+          "focus-within:border-accent focus-within:bg-surface-elevated focus-within:shadow-[var(--shadow-elevated)] focus-within:ring-2 focus-within:ring-accent/15"
+        )}
+      >
         <SearchIcon
-          className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle-foreground"
+          className="h-5 w-5 shrink-0 text-subtle-foreground transition-colors group-focus-within:text-accent"
           aria-hidden="true"
         />
-        <Input
+        <input
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search movies, TV shows, and people..."
           aria-label="Search movies, TV shows, and people"
-          className="h-12 pl-10 text-base"
+          className="w-full bg-transparent text-base text-foreground placeholder:text-subtle-foreground focus:outline-none"
           autoFocus
         />
+        {query && (
+          <button
+            type="button"
+            onClick={() => setQuery("")}
+            aria-label="Clear search"
+            className="shrink-0 rounded-full p-1 text-subtle-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {debouncedQuery && (
@@ -67,15 +83,25 @@ export function SearchExperience({ initialQuery = "" }: { initialQuery?: string 
               key={t.value}
               type="button"
               onClick={() => setTab(t.value)}
+              aria-pressed={tab === t.value}
               className={cn(
-                "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
+                "flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors",
                 tab === t.value
                   ? "bg-accent-muted text-accent"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
               )}
             >
               {t.label}
-              {data && <span className="ml-1.5 text-xs opacity-70">{counts[t.value]}</span>}
+              {data && (
+                <span
+                  className={cn(
+                    "rounded-full px-1.5 py-0.5 text-xs tabular-nums",
+                    tab === t.value ? "bg-accent/15" : "bg-surface-hover text-subtle-foreground"
+                  )}
+                >
+                  {counts[t.value]}
+                </span>
+              )}
             </button>
           ))}
         </div>

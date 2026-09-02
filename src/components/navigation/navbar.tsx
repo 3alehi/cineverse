@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Search, User } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/layout/logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { primaryNav } from "@/config/navigation";
@@ -13,6 +13,7 @@ export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +22,19 @@ export function Navbar() {
       router.push(`/search?q=${encodeURIComponent(trimmed)}`);
     }
   };
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isTyping = target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
+      if (e.key === "/" && !isTyping) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 hidden border-b border-border bg-background/85 backdrop-blur md:block">
@@ -53,11 +67,19 @@ export function Navbar() {
 
         <form
           onSubmit={handleSearchSubmit}
-          className="ml-auto flex max-w-xs flex-1 items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-2 focus-within:border-border-strong"
           role="search"
+          className={cn(
+            "group ml-auto flex max-w-xs flex-1 items-center gap-2.5 rounded-full border bg-surface px-4 py-2.5 transition-all duration-150",
+            "border-border hover:border-border-strong",
+            "focus-within:border-accent focus-within:bg-surface-elevated focus-within:ring-2 focus-within:ring-accent/15"
+          )}
         >
-          <Search className="h-4 w-4 shrink-0 text-subtle-foreground" aria-hidden="true" />
+          <Search
+            className="h-4 w-4 shrink-0 text-subtle-foreground transition-colors group-focus-within:text-accent"
+            aria-hidden="true"
+          />
           <input
+            ref={searchInputRef}
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -65,6 +87,9 @@ export function Navbar() {
             aria-label="Search movies, TV shows, and people"
             className="w-full bg-transparent text-sm text-foreground placeholder:text-subtle-foreground focus:outline-none"
           />
+          <kbd className="hidden shrink-0 rounded border border-border-strong px-1.5 py-0.5 text-[10px] font-medium text-subtle-foreground group-focus-within:hidden sm:block">
+            /
+          </kbd>
         </form>
 
         <div className="flex items-center gap-3">
